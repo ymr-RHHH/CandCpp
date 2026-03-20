@@ -338,7 +338,7 @@
 >
 > Do we need to creat a new name for each of these function and keep track different names for functions that are essentially performing the same kind of logical operation?
 >
-> In C we should do this, but in C++ we can say NO! Because we have function overloading, an overloading resolution, where we rely on our compiler to choose the right version of a function for us.
+> In C we should do this, but in C++ we can say NO! Because we have function overloading (with an overloading resolution), where we rely on our compiler to choose the right version of a function for us.
 
 - https://cppreference.com/w/cpp/language/overload_resolution.html
 
@@ -348,20 +348,11 @@
   #include<iostream>
   #include<array>
   
-  void print_array(std::array<int,5> my_array)
-  {
-    for(auto value : my_array)
-    {
-      std::cout << value << " ";
-    }
-    std::cout << "\n";
-  }
-  
   void print_array(std::array<float,5> my_array)
   {
     for(auto value : my_array)
     {
-      std::cout << value << " ";
+      std::cout <<"float  :"<< value << " ";
     }
     std::cout << "\n";
   }
@@ -380,9 +371,86 @@
 
  
 
+## Function Templates
+
+> In the previous class, we learned function overloading and resolution. But we hace noticed that we were starting to get some code duplication from our functions themselves: We had two version of print_array function, but both of these functions had the same function body, so we just had this kind of wasted effort here of  writing multiple functions that we essentially doing the same thing (The only difference is in their parameter list).
+
+- https://cppreference.com/w/cpp/language/templates.html
+
+- Now, we often address this kind of code duplication related to functions by **function templates**. 
+
+- Functions allows us to write a template of a function rather than concrete implementations for a specific type. 
+
+  > We can write a template and tell our compiler "Hey! I want the version of this function where the type is an array of int, or an array of floats, or an array of doubles ", instead of having to manually write out these different forms of the function. 
+
+  ```cpp
+  // function_template.cpp
+  #include<iostream>
+  #include<array>
+  #include<typeinfo>
+  
+  // We use the key word "template" to delcare this function is a template
+  template<typename T>
+  void print_array(T my_array) // T is just a placeholder
+  {
+    for(auto value : my_array)
+    {
+      std::cout << typeid(value).name() << ":" << value << " ";
+    }
+    std::cout << "\n";
+  }
+  
+  int main()
+  {
+    std::array<int,5> int_array = {1,2,3,4,5};
+    std::array<float,5> float_array = {1.1f,2.2f,3.3f,4.4f,5.5f};
+    
+    //  Explicitly specifying template parameters
+    print_array<std::array<int,5>>(int_array);
+    print_array<std::array<float,5>>(float_array);
+      
+    std::cout << "\n";
+    // Maybe after C++11， we could implicitly specified template parameters
+    print_array(int_array);
+    print_array(float_array);
+    
+    return 0;
+  }
+  ```
+
+  - But in C++20 , we can simplify the syntax
+
+    ```cpp
+    #include<iostream>
+    #include<array>
+    #include<typeinfo>
+    
+    void print_array(auto my_array)
+    {
+      for(auto value : my_array)
+      {
+        std::cout << typeid(value).name() << ":" << value << " ";
+      }
+      std::cout << "\n";
+    }
+    
+    int main()
+    {
+      std::array<int,5> int_array = {1,2,3,4,5};
+      std::array<float,5> float_array = {1.1f,2.2f,3.3f,4.4f,5.5f};
+      
+      print_array(int_array);
+      print_array(float_array);
+      
+      return 0;
+    }
+    ```
+
+    This is only available in c++20, or if we turn on or enable concepts. And when we compile this file, we should use "gcc filename.cpp -lstdc++ -o filename -std=c++20" 
 
 
 
+## Template Specialization
 
 
 
