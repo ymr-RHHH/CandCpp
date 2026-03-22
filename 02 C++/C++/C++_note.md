@@ -452,7 +452,53 @@
 
 ## Template Specialization
 
+> We can use function template to avoid manually writting the duplicate code for multiple  types. But here is a question: Sometimes , we don't want to have the exact same function body for every single type. Sometimes there's a case where we need a specialization of this function.
+>
+> We can through template specialization to solve this problem.
 
+- https://en.cppreference.com/w/cpp/language/function_template.html
+
+```cpp
+#include<iostream>
+#include<array>
+#include<typeinfo>
+
+void print_array(auto my_array)
+{
+  for(auto value : my_array)
+  {
+    std::cout << typeid(value).name() << ":" << value << " ";
+  }
+  std::cout << "\n";
+}
+
+// We need to handle the case of array<int, 5>
+template<>
+void print_array(std::array<int,5> my_array)
+{
+  for(auto value : my_array)
+  {
+    std::cout << typeid(value).name() << ":" << value << " ";
+  }
+  std::cout << "  special case <int,5>\n";
+}
+
+int main()
+{
+  std::array<int,5> int_array = {1,2,3,4,5};
+  std::array<float,5> float_array = {1.1f,2.2f,3.3f,4.4f,5.5f};
+  
+  
+  print_array(int_array);
+  print_array(float_array);
+  
+  return 0;
+}
+```
+
+
+
+## Iterators
 
 
 
